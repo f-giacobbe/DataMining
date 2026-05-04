@@ -5,7 +5,8 @@ Python notebooks for the "Data Mining" course, Bachelor's Degree ("Laurea Trienn
 > * Part 1 - Data Handling (Numpy & Pandas)
 > * Part 2 - Classification (scikit-learn)
 > * Part 3 - Clustering
-> * Part 4 - TBD
+> * Part 4 - Regression
+> * Part 5 - TBD
 
 # Acknowledgements
 Most of the material was kindly assembled by the previous course tutor.
