@@ -151,11 +151,9 @@ disp.plot()
 plt.show()
 ```
 
-# Modelli (sklearn)
+# Classificazione
 
-## Classificazione
-
-### Decision Tree con massima profondità
+## Decision Tree con massima profondità
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
@@ -163,7 +161,7 @@ dt = DecisionTreeClassifier(max_depth=15)
 dt.fit(X_train, y_train)
 ```
 
-### KNN con k neighbor
+## KNN con k neighbor
 ```python
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -171,7 +169,7 @@ knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train, y_train)
 ```
 
-### Voting Classifier (con hard voting)
+## Voting Classifier (con hard voting)
 ```python
 from sklearn.ensemble import VotingClassifier
 
@@ -179,16 +177,53 @@ voting = VotingClassifier(estimators = [('dt', dt), ('knn', knn)], voting='hard'
 voting.fit(X_train, y_train)
 ```
 
-#### F1-score
+## Random forest
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+clf = RandomForestClassifier(n_estimators=n)
+???????????????????????????????????????????????????????????????????
+```
+
+## Cross validation score
+```python
+from sklearn.model_selection import cross_val_score
+
+cross_val_score(classifier, X_train, y_train, cv=n, scoring='accuracy')
+```
+
+## Cross validation predict (dà in output proprio le classi/proba predette invece dello score)
+```python
+from sklearn.model_selection import cross_val_predict
+
+cross_val_predict(clf, X_train, y_train, cv=3)#, method='predict_proba')
+```
+
+## Precision/recall
+```python
+from sklearn.metrics import precision_score, recall_score
+
+precision_score(y_train, y_pred)
+recall_score(y_train, y_pred)
+```
+
+## F1-score
 ```python
 from sklearn.metrics import f1_score
 
 f1_score(y_test, dt.predict(X_test))
 ```
 
-## Clustering
+## ROC AUC
+```python
+from sklearn.metrics import roc_auc_score
 
-### K-means
+roc_auc_score(y_train, y_pred)
+```
+
+# Clustering
+
+## K-means
 ```python
 from sklearn.cluster import KMeans
 
