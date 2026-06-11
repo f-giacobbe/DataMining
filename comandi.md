@@ -18,13 +18,110 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = test_train_split(X, y, test_size=0.2)
 ```
 
+# pd.Series
+```python
+import numpy as np
+
+series = pd.Series(np.arange(10), index=list('abcdefghil'))
+series.index
+series.values
+
+series.isnull()     # mask
+
+# Sort index (capita all'esame)
+sorted_df = df.sort_index() # axis=1, ascending=True
+
+# Sort values
+sorted_series = series.sort_values()
+
+# Count
+value_count = series.value_counts() # sort=True
+```
+
 # pd.DataFrame
 ```python
 df.info()   # Informazioni del tipo: data types, utilizzo memoria, valori non-NA
 df.describe()   # Media, count, ...
 df.head(10)   # Prime 10 righe
 df.tail(10)     # Ultime 10 righe
+
+
+
+
+data = {
+    'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+    'year': [2000, 2001, 2002, 2001, 2002],
+    'pop': [1.5, 1.7, 3.6, 2.4, 2.9]
+}
+df = pd.DataFrame(data) # , columns=['year', 'state', 'pop'], index=np.arange(5))
+# Index -> Row index
+# Columns -> Column index
+
+
+# Accessing the column
+df['state']
+
+# Accessing the rows
+df.iloc[0]  # First element
+df.loc[0]   # Element with index 0
+
+df.index = np.arange(10)    # Yes
+df.index[0] = 0             # No, the index is immutable
+df.index = df.index.append(pd.Index(['ciao']))     # Yes, concatenation
+
+df.columns = new_columns
+
+# Dropping rows (axis = 0) (not in-place)
+df = df.drop(['Colorado', 'Utah'])
+
+# Dropping columns
+df = df.drop([0, 1], axis=1)
+df = df.drop(columns=[0, 1])
+
+'''
+Select all the element of
+the dataframe with value greater
+than 3 in column 'three'
+'''
+df[df['three'] > 3]
+
+df.dropna() # how='any'/'all'
+
+df.fillna('a')
+
+df.duplicated()
+
+df.drop_duplicates()
+
+# Merge
+df.join(df_)
 ```
+
+# Istogramma
+```python
+sns.set()   # Enable seaborn
+
+plt.figure()
+plt.hist(df['eta'])
+plt.show()
+```
+
+# Pairplot (importantissimo)
+```python
+sns.pairplot(iris, hue='species')
+```
+
+# KDE
+```python
+sns.kdeplot(df['eta'])
+```
+
+# Jointplot
+```python
+sns.jointplot(data=df, x='x', y='y', kind='kde')
+```
+
+# Grafico a dispersione cluster
 
 # Heatmap correlazione (richiede Pandas, Seaborn, e PyPlot di MatPlotLib)
 ```python
@@ -35,6 +132,17 @@ correlation_matrix = df.corr(numeric_only=True)     # Considero solo gli attribu
 
 plt.figure()
 sns.heatmap(correlation_matrix, cmap='coolwarm', vmin=-1, vmax=1)
+plt.show()
+```
+
+# Confusion matrix
+```python
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+cm = confusion_matrix(y_test, y_pred)
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot()
 plt.show()
 ```
 
