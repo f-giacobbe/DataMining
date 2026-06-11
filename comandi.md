@@ -28,9 +28,6 @@ series.values
 
 series.isnull()     # mask
 
-# Sort index (capita all'esame)
-sorted_df = df.sort_index() # axis=1, ascending=True
-
 # Sort values
 sorted_series = series.sort_values()
 
@@ -95,10 +92,18 @@ df.drop_duplicates()
 
 # Merge
 df.join(df_)
+
+# Sort index
+sorted_df = df.sort_index() # axis=1, ascending=True
 ```
 
-# Istogramma
+# Grafici
+
+## Istogramma
 ```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 sns.set()   # Enable seaborn
 
 plt.figure()
@@ -106,24 +111,24 @@ plt.hist(df['eta'])
 plt.show()
 ```
 
-# Pairplot (importantissimo)
+## Pairplot (importantissimo)
 ```python
 sns.pairplot(iris, hue='species')
 ```
 
-# KDE
+## KDE
 ```python
 sns.kdeplot(df['eta'])
 ```
 
-# Jointplot
+## Jointplot
 ```python
 sns.jointplot(data=df, x='x', y='y', kind='kde')
 ```
 
-# Grafico a dispersione cluster
+## Grafico a dispersione cluster (?)
 
-# Heatmap correlazione (richiede Pandas, Seaborn, e PyPlot di MatPlotLib)
+## Heatmap correlazione (richiede Pandas, Seaborn, e PyPlot di MatPlotLib)
 ```python
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -135,7 +140,7 @@ sns.heatmap(correlation_matrix, cmap='coolwarm', vmin=-1, vmax=1)
 plt.show()
 ```
 
-# Confusion matrix
+## Confusion matrix
 ```python
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
@@ -147,7 +152,43 @@ plt.show()
 ```
 
 # Modelli (sklearn)
-## K-means
+
+## Classificazione
+
+### Decision Tree con massima profondità
+```python
+from sklearn.tree import DecisionTreeClassifier
+
+dt = DecisionTreeClassifier(max_depth=15)
+dt.fit(X_train, y_train)
+```
+
+### KNN con k neighbor
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+```
+
+### Voting Classifier (con hard voting)
+```python
+from sklearn.ensemble import VotingClassifier
+
+voting = VotingClassifier(estimators = [('dt', dt), ('knn', knn)], voting='hard')
+voting.fit(X_train, y_train)
+```
+
+#### F1-score
+```python
+from sklearn.metrics import f1_score
+
+f1_score(y_test, dt.predict(X_test))
+```
+
+## Clustering
+
+### K-means
 ```python
 from sklearn.cluster import KMeans
 
@@ -157,37 +198,6 @@ kmeans = KMeans(n_clusters=3)
 kmeans.fit(X)       # Solo X!
 
 kmeans.inertia_     # (SSE)
-```
-
-## Decision Tree con massima profondità
-```python
-from sklearn.tree import DecisionTreeClassifier
-
-dt = DecisionTreeClassifier(max_depth=15)
-dt.fit(X_train, y_train)
-```
-
-## KNN con k neighbor
-```python
-from sklearn.neighbors import KNeighborsClassifier
-
-knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X_train, y_train)
-```
-
-## Voting Classifier (con hard voting)
-```python
-from sklearn.ensemble import VotingClassifier
-
-voting = VotingClassifier(estimators = [('dt', dt), ('knn', knn)], voting='hard')
-voting.fit(X_train, y_train)
-```
-
-### F1-score
-```python
-from sklearn.metrics import f1_score
-
-f1_score(y_test, dt.predict(X_test))
 ```
 
 # Rete neurale
