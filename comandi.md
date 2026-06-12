@@ -169,20 +169,64 @@ knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train, y_train)
 ```
 
-## Voting Classifier (con hard voting)
+## Ensemble
+
+### Voting Classifier (hard e soft)
+> Nel soft voting, il peso del voto di un classificatore è pari alla probabilità max predetta. (ATTENZIONE! Per il classificatore SVC è necessario istanziarlo con `probability=True`).
 ```python
 from sklearn.ensemble import VotingClassifier
 
-voting = VotingClassifier(estimators = [('dt', dt), ('knn', knn)], voting='hard')
+voting = VotingClassifier(estimators = [('dt', dt), ('knn', knn)], voting='hard')   # per il soft voting è sufficiente rimpiazzare 'hard' con 'soft'
 voting.fit(X_train, y_train)
 ```
 
-## Random forest
+### Bagging & Pasting
+> Bagging: bootstrap aggregating with replacement. Pasting: bootstrap aggregating without replacement.
+```python
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier # base classifier
+
+base = DecisionTreeClassifier()
+
+bagging = BaggingClassifier(base,
+    n_estimators=500,   # quante istanze dello stesso modello
+    max_samples=100,
+    oob_score=True      # Out-of-bag: utilizza gli oggetti fuori dal training set per valutare il modello
+    bootstrap=True,)    # True -> bagging; False -> pasting
+
+bagging.fit(X_train, y_train)
+y_pred = bagging.predict(X_test)
+
+# Se oob_score=True
+bagging.oob_score_      # Simile all'errore sul test set
+```
+
+### Random forest
 ```python
 from sklearn.ensemble import RandomForestClassifier
 
-clf = RandomForestClassifier(n_estimators=n)
-???????????????????????????????????????????????????????????????????
+clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+
+# Feature importances
+clf.feature_importances_    # out: Array con importanza di ogni feature
+```
+
+### AdaBoost
+```python
+from sklearn.ensemble import AdaBoostClassifier
+
+clf = AdaBoostClassifier(estimator=base_clf, learning_rate=0.5)
+clf.fit(X_train, y_train)
+```
+
+### Gradient Boosting Regressor
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+clf = GradientBoostingRegressor(max_depth=2, n_estimators=3, learning_rate=1.0)
+clf.fit(X_train, y_train)
 ```
 
 ## Cross validation score
@@ -220,6 +264,13 @@ f1_score(y_test, dt.predict(X_test))
 from sklearn.metrics import roc_auc_score
 
 roc_auc_score(y_train, y_pred)
+```
+
+## Accuracy score
+```python
+from sklearn.metrics import accuracy score
+
+accuracy_score(y_test, y_pred)
 ```
 
 # Clustering
