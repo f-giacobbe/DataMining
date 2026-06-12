@@ -193,6 +193,7 @@ cross_val_score(classifier, X_train, y_train, cv=n, scoring='accuracy')
 ```
 
 ## Cross validation predict (dà in output proprio le classi/proba predette invece dello score)
+> La differenza tra predict e cross_val_predict è che la predict la si fa dopo la fit (quindi su un modello allenato) ed è opportuno fornire un oggetto non visto dal modello durante il training. La cross_val predict, invcece, viene fatta sugli stessi dati di training.
 ```python
 from sklearn.model_selection import cross_val_predict
 
