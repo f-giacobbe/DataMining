@@ -126,7 +126,14 @@ sns.kdeplot(df['eta'])
 sns.jointplot(data=df, x='x', y='y', kind='kde')
 ```
 
-## Grafico a dispersione cluster (?)
+## Grafico a dispersione cluster (scatter)
+```python
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.scatter(df['x'], df['y'], c=df['target'])
+plt.show()
+```
 
 ## Heatmap correlazione (richiede Pandas, Seaborn, e PyPlot di MatPlotLib)
 ```python
@@ -159,6 +166,9 @@ from sklearn.tree import DecisionTreeClassifier
 
 dt = DecisionTreeClassifier(max_depth=15)
 dt.fit(X_train, y_train)
+
+y_pred = df.predict(y_test)
+y_pred_prob = df.predict_proba(y_test)
 ```
 
 ## KNN con k neighbor
@@ -229,14 +239,17 @@ clf = GradientBoostingRegressor(max_depth=2, n_estimators=3, learning_rate=1.0)
 clf.fit(X_train, y_train)
 ```
 
-## Cross validation score
+## Metriche di valutazione
+
+### Cross validation score
 ```python
 from sklearn.model_selection import cross_val_score
 
 cross_val_score(classifier, X_train, y_train, cv=n, scoring='accuracy')
 ```
 
-## Cross validation predict (dà in output proprio le classi/proba predette invece dello score)
+
+### Cross validation predict (dà in output proprio le classi/proba predette invece dello score)
 > La differenza tra predict e cross_val_predict è che la predict la si fa dopo la fit (quindi su un modello allenato) ed è opportuno fornire un oggetto non visto dal modello durante il training. La cross_val predict, invcece, viene fatta sugli stessi dati di training.
 ```python
 from sklearn.model_selection import cross_val_predict
@@ -244,7 +257,7 @@ from sklearn.model_selection import cross_val_predict
 cross_val_predict(clf, X_train, y_train, cv=3)#, method='predict_proba')
 ```
 
-## Precision/recall
+### Precision/recall
 ```python
 from sklearn.metrics import precision_score, recall_score
 
@@ -252,21 +265,21 @@ precision_score(y_train, y_pred)
 recall_score(y_train, y_pred)
 ```
 
-## F1-score
+### F1-score
 ```python
 from sklearn.metrics import f1_score
 
 f1_score(y_test, dt.predict(X_test))
 ```
 
-## ROC AUC
+### ROC AUC
 ```python
 from sklearn.metrics import roc_auc_score
 
 roc_auc_score(y_train, y_pred)
 ```
 
-## Accuracy score
+### Accuracy score
 ```python
 from sklearn.metrics import accuracy score
 
@@ -282,9 +295,46 @@ from sklearn.cluster import KMeans
 # Ho già X = wine.data e y = wine.target
 
 kmeans = KMeans(n_clusters=3)
-kmeans.fit(X)       # Solo X!
+kmeans.fit(X)       # Solo X! (unsupervised)
 
-kmeans.inertia_     # (SSE)
+# Cluster predetti (da X)
+kmeans.labels_
+
+# Aggiungere eventuali nuovi punti (se X_new = X, allora coincide con labels_)
+kmeans.predict(X_new)
+
+# Centroidi
+kmeans.cluster_centers_
+```
+
+## K-means++
+```python
+from sklearn.cluster import KMeans
+
+kmeans_pp = KMeans(n_clusters=3, init='k-means++')
+```
+
+## DBSCAN (non ha la predict(), solo fit_predict() -> non riesce a predire nuovi dati al di fuori da quelli di training)
+```python
+from sklearn.cluster import DBSCAN
+
+dbscan = DBSCAN(eps=0.05)
+dbscan.fit(X)
+```
+
+## Metriche di valutazione
+
+### SSE (inertia)
+```python
+kmeans.inertia_
+kmeans.score(X)     # SSE negativa (score da massimizzare)
+```
+
+### Silhouette
+```python
+from sklearn.metrics import silhouette_score
+
+silhouette_score(X, kmeans.labels_)
 ```
 
 # Rete neurale
