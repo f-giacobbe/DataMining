@@ -18,6 +18,65 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = test_train_split(X, y, test_size=0.2)
 ```
 
+# Data cleaning (Transformers)
+## Imputer (attributi numerici)
+```python
+from sklearn.impute import SimpleImputer
+
+imputer = SimpleImputer(strategy='median')      # Rimpiazza i nulli con la mediana
+df_num = df.select_dtypes(include=[np.number])
+df_num = DataFrame(imputer.fit_transform(df_num), columns=df_num.columns, index=df.index)
+```
+
+## OrdinalEncoder (attributi categorici)
+> Non si usa perché i modelli interpretano male l'indice di categoria assumendo che la vicinanza sia significativa.
+```python
+from sklearn.preprocessing import OrdinalEncoder
+
+ordinal_encoder = OrdinalEncoder()
+df_cat = df.select_dtypes(include=['object', 'str'])
+df_cat = DataFrame(ordinal_encoder.fit_transform(df_cat), columns=df_cat.columns, index=df.index)
+```
+
+## OneHotEncoder (attributi categorici)
+```python
+from sklearn.preprocessing import OneHotEncoder
+
+one_hot_encoder = OneHotEncoder()
+df_cat = df.select_dtypes(include=['object', 'str'])
+                                                        # Serve perché di default restituisce un array sparso (una lista con solo gli 1)
+df_cat = DataFrame(one_hot_encoder.fit_transform(df_cat).toarray(), columns=df_cat.columns, index=df.index)
+```
+
+## Pipeline
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+num_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('std_scaler', StandardScaler()),
+])
+
+df_num = DataFrame(num_pipeline.fit_transform(df_num), columns=df_num.columns, index=df.index)
+```
+
+## ColumnTransformer
+> Serve per applicare diverse pipeline a diversi tipi di attributi
+```python
+from sklearn.compose import ColumnTransformer
+
+cat_attr = [...]
+num_attr = [...]
+
+full_pipeline = ColumnTransformer([
+    ("num", num_pipeline, num_attr),
+    ("cat", OneHotEncoder(), cat_attr),
+])
+
+df_prepared = DataFrame(full_pipeline.fit_transform(df), columns=df.columns, index=df.index)
+```
+
 # pd.Series
 ```python
 import numpy as np
@@ -107,13 +166,23 @@ import matplotlib.pyplot as plt
 sns.set()   # Enable seaborn
 
 plt.figure()
-plt.hist(df['eta'])
+plt.hist(df['eta'], bins=x)
+df['eta'].hist(bins=x)  # equivalente
 plt.show()
+
+# Oppure, per un istogramma di ogni attributo
+df.hist()
 ```
 
 ## Pairplot (importantissimo)
 ```python
 sns.pairplot(iris, hue='species')
+
+# Eventualmente anche per un sottoinsieme degli attributi
+sns.pairplot(iris[['a', 'b']], hue='b')
+
+# O per un sottoinsieme degli oggetti
+sns.pairplot(iris.samples(200), hue='species')
 ```
 
 ## KDE
@@ -145,6 +214,9 @@ correlation_matrix = df.corr(numeric_only=True)     # Considero solo gli attribu
 plt.figure()
 sns.heatmap(correlation_matrix, cmap='coolwarm', vmin=-1, vmax=1)
 plt.show()
+
+# Può essere utile vedere la correlazione rispetto al target, per fare eventuale pruning
+correlation_matrix['target'].sort_values(ascending=False)
 ```
 
 ## Confusion matrix
@@ -336,6 +408,52 @@ from sklearn.metrics import silhouette_score
 
 silhouette_score(X, kmeans.labels_)
 ```
+
+# Regressione
+## Linear Regression
+```python
+from sklearn.linear_model import LinearRegression
+
+lin_reg = LinearRegression()
+lin_reg.fit(X_train, y_train)
+```
+
+## Decision Tree Regressor
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+tree_reg = DecisionTreeRegressor()
+tree_reg.fit(X_train, y_train)
+```
+
+## Random Forest Regressor
+### Cross validation score
+```python
+from sklearn.ensemble import RandomForestRegressor
+
+forest_reg = RandomForestRegressor(n_estimators=10)
+forest_reg.fit(X_train, y_train)
+```
+
+## Metriche di valutazione
+### (Root) Mean Squared Error, Mean Absolute Error
+```python
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
+y_pred = lin_reg.predict(X_train)
+lin_mse = mean_squared_error(y_train, y_pred)        # In questo caso vogliamo l'errore sul training set
+lin_rmse = np.sqrt(lin_mse)
+```
+
+### Cross validation score
+```python
+from sklearn.model_selection import cross_val_score
+
+scores =cross_val_score(tree_reg, X_train, y_train, cv=n, scoring='neg_mean_squared_error')     # NEG perché score va massimizzato
+rmse_scores = np.sqrt(-scores)
+```
+
 
 # Rete neurale
 ```python
