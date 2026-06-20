@@ -238,6 +238,28 @@ sns.heatmap(cm, ...)
 plt.show()
 ```
 
+## Barh (es. plot 5 most important features)
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+feature_importances = random_forest_clf.feature_importances_
+top_5_indices = np.argsort(feature_importances_)[:5][::-1]
+
+plt.figure()    # y                                             width
+plt.barh([wine.feature_names[i] for i in top_5_indices], [feature_importances[i] for i in top_5_indices])
+plt.show()
+```
+
+## Plot generico
+```python
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.plot(X, Y)
+plt.show()
+```
+
 # Classificazione
 
 ## Decision Tree con massima profondità
@@ -410,7 +432,7 @@ kmeans.inertia_
 kmeans.score(X)     # SSE negativa (score da massimizzare)
 ```
 
-### Silhouette
+### Silhouette (not in cheatsheet!)
 ```python
 from sklearn.metrics import silhouette_score
 
