@@ -154,6 +154,9 @@ df.join(df_)
 
 # Sort index
 sorted_df = df.sort_index() # axis=1, ascending=True
+
+# Sample of n elements (or of n columns)
+df.sample(n)    # axis=1
 ```
 
 # Grafici
@@ -227,6 +230,11 @@ cm = confusion_matrix(y_test, y_pred)
 
 disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 disp.plot()
+plt.show()
+
+# Oppure tramite sns
+plt.figure()
+sns.heatmap(cm, ...)
 plt.show()
 ```
 
@@ -427,7 +435,6 @@ tree_reg.fit(X_train, y_train)
 ```
 
 ## Random Forest Regressor
-### Cross validation score
 ```python
 from sklearn.ensemble import RandomForestRegressor
 
@@ -450,7 +457,7 @@ lin_rmse = np.sqrt(lin_mse)
 ```python
 from sklearn.model_selection import cross_val_score
 
-scores =cross_val_score(tree_reg, X_train, y_train, cv=n, scoring='neg_mean_squared_error')     # NEG perché score va massimizzato
+scores = cross_val_score(tree_reg, X_train, y_train, cv=n, scoring='neg_mean_squared_error')     # NEG perché score va massimizzato
 rmse_scores = np.sqrt(-scores)
 ```
 
