@@ -159,6 +159,16 @@ sorted_df = df.sort_index() # axis=1, ascending=True
 df.sample(n)    # axis=1
 ```
 
+
+# Numpy
+```python
+import numpy as np
+
+np.argmax([])
+np.argmin([])
+np.argsort([])
+```
+
 # Grafici
 
 ## Istogramma
@@ -507,4 +517,13 @@ class MyNetwork(nn.Module):
         x = torch.relu(self.fc2(x))
         x = self.fc3(x)
         return torch.softmax(x, dim=1)      # dim=1 fa in modo che la somma delle probabilità di ogni riga sia 1 (quello che vogliamo)
+
+
+# Oppure direttamente
+model = nn.Sequential(nn.Linear(input, neuroni_layer_1),
+                    nn.ReLU(),
+                    nn.Linear(neuroni_layer_1, neuroni_layer_2),
+                    nn.ReLU(),
+                    nn.Linear(neuroni_layer_2, output),
+                    nn.Softmax(dim=1))
 ```
