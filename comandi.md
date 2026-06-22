@@ -248,6 +248,18 @@ sns.heatmap(cm, ...)
 plt.show()
 ```
 
+## Bar e xticks
+```python
+
+plt.figure()
+plt.bar(feature_names[indices], importances[indices])
+            # tick delle x
+plt.xicks(range(3), feature_names[indices], rotation=90)
+                        # label delle x
+plt.show()
+
+```
+
 ## Barh (es. plot 5 most important features)
 ```python
 import matplotlib.pyplot as plt
@@ -442,7 +454,7 @@ kmeans.inertia_
 kmeans.score(X)     # SSE negativa (score da massimizzare)
 ```
 
-### Silhouette (not in cheatsheet!)
+### Silhouette (not in cheatsheet!) (solo per K >= 2 clusters)
 ```python
 from sklearn.metrics import silhouette_score
 
