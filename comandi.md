@@ -155,6 +155,9 @@ df.join(df_)
 # Sort index
 sorted_df = df.sort_index() # axis=1, ascending=True
 
+# Sort values
+sorted_df = df.sort_values('by') # ascending
+
 # Sample of n elements (or of n columns)
 df.sample(n)    # axis=1
 ```
@@ -196,6 +199,9 @@ sns.pairplot(iris[['a', 'b']], hue='b')
 
 # O per un sottoinsieme degli oggetti
 sns.pairplot(iris.samples(200), hue='species')
+
+# es. Pairplot dei primi 4 attributi con colorazione per target (che non fa parte dei primi 4 attributi)
+sns.pairplot(df, vars=df.iloc[:, :4], hue='target')
 ```
 
 ## KDE
@@ -258,6 +264,13 @@ plt.xicks(range(3), feature_names[indices], rotation=90)
                         # label delle x
 plt.show()
 
+
+
+
+# Da un DataFrame
+mean_values = df.mean()
+mean_values.plot(kind='bar')
+plt.show()
 ```
 
 ## Barh (es. plot 5 most important features)
